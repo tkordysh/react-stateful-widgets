@@ -28,8 +28,8 @@ export default function Programmers() {
   // We'll have to use the state hook twice, as we need two slices of state.
   // The programmers list on the one hand, and the id of the featured programmer on the other.
 
-  const [programmersList, setProgrammersList] = useState(listOfAwesome);
-  const [id, setID] = useState(null);
+  const [programmers, setProgrammers] = useState(listOfAwesome);
+  const [featured, setFeatured] = useState(null);
 
   const getNameOfFeatured = () => {
     // Leave this for last!
@@ -38,13 +38,20 @@ export default function Programmers() {
     // The beauty of closures is that we can "see" both slices of state from this region
     // of the program, without needing to inject the information through arguments.
 
-    setID(id);
+    // for (let i = 0; i < programmers.length; i++){
+    //   if (programmers[i].id === featured) {
+    //     return programmers[i].name;
+    //   }
+    // }
+
+    const featuredDev = programmers.find(elem => elem.id === featured);
+    return featuredDev.name;
   };
 
   const style = {
     fontSize: '1.5em',
     marginTop: '0.5em',
-    color: id === null ? 'royalblue' : 'gold' // 🤔 color turns to gold, when celebrating
+    color: featured ? 'gold' : 'royalblue' // 🤔 color turns to gold, when celebrating
   };
 
   return (
@@ -55,9 +62,9 @@ export default function Programmers() {
           /* Nasty bug! We should map over a slice of state, instead of 'listOfAwesome'.
           We might think: "it works, though!" But if the list of programmers is not state,
           we could never add or edit programmers in the future. The list would be a static thing." */
-          programmersList.map(dev =>
+          programmers.map(dev =>
             <div className='programmer' key={dev.id}>
-              {dev.name} <button onClick={() => dev.id}>Feature</button>
+              {dev.name} <button onClick={() => {setFeatured(dev.id)}}>Feature</button>
             </div>
           )
         }
@@ -67,7 +74,7 @@ export default function Programmers() {
           // Ternaries are fantastic to render "one thing or the other" depending on the "truthiness" of something.
           // Pseudo-code: if the currently featured id is truthy render text 1, otherwise render text 2.
           // Replace the hard-coded false with the correct variable.
-          id
+          featured 
             ? `🎉 Let's celebrate ${getNameOfFeatured()}! 🥳`
             : 'Pick an awesome programmer'
         }
